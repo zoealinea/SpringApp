@@ -13,6 +13,8 @@ spec:
       labels:
         app: springapp
     spec:
+      imagePullSecrets:
+      - name: jfrog-secret
       containers:
       - name: springapp
         image: zreyyes.jfrog.io/springapp-docker/springapp:v1
