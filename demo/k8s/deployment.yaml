@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springapp-deployment
+  namespace: springapp-namespace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: springapp
+  template:
+    metadata:
+      labels:
+        app: springapp
+    spec:
+      containers:
+      - name: springapp
+        image: myname.jfrog.io/springapp-docker/springapp:v1
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: springapp-service
+  namespace: springapp-namespace
+spec:
+  type: ClusterIP
+  selector:
+    app: springapp
+  ports:
+  - port: 8080
+    targetPort: 8080

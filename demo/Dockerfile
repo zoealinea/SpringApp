@@ -5,10 +5,12 @@ FROM openjdk:17-jdk-slim
 WORKDIR /app
 
 # Copy the JAR file built from the Maven project
-COPY target/myapp.jar /app/myapp.jar
+# COPY target/myapp.jar /app/myapp.jar
+ARG JAR_FILE=target/*.jar
+COPY ${JAR_FILE} app.jar
 
 # Expose port 8080
-EXPOSE 8080
+# EXPOSE 8080
 
 # Run the Spring Boot application
-ENTRYPOINT ["java", "-jar", "myapp.jar"]
+ENTRYPOINT ["java", "-jar", "/app.jar"]
