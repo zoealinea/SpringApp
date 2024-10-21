@@ -58,8 +58,27 @@ docker --version
 
 You should see the Docker version. Now Docker is ready to use.
 
-### 2.5. Set up JFrog Artifactory
-Follow the steps to create and set up JFrog Artifactory. Ensure you are authenticated and logged in with the correct credentials.
+### 2.5 Dockerize the Application
+Create a `Dockerfile` in the root of your project to containerize your Spring Boot application. Build the Docker image with the following command:
+```bash
+docker build -t your-docker-image-name .
+```
+
+### 2.75 Set up JFrog Artifactory
+Follow the steps to create and set up JFrog Artifactory. Ensure you are authenticated and logged in with the correct credentials. Push the image.
+1. **Authenticate with JFrog**: Log in to your JFrog Artifactory.
+   ```bash
+   docker login myname.jfrog.io
+   ```
+2. **Tag the Image**: Tag your image appropriately.
+   ```bash
+   docker tag your-docker-image-name myname.jfrog.io/artifactory/springapp-docker/springapp:v1
+   ```
+3. **Push the Image**: Push your Docker image to JFrog Artifactory.
+   ```bash
+   docker push myname.jfrog.io/artifactory/springapp-docker/springapp:v1
+   ```
+
 
 ### 3. Install MicroK8s on WSL Ubuntu
 Run:
@@ -86,6 +105,12 @@ alias kubectl='microk8s kubectl'
 kubectl create namespace springapp-namespace
 ```
 
+### 3.5 Deploy the Application
+Create a `deployment.yaml` file in your project directory for Kubernetes deployment. Apply the configuration with:
+```bash
+microk8s kubectl apply -f deployment.yaml
+```
+
 ### 4. Install ArgoCD on WSL Ubuntu
 Followed https://medium.com/@SambathKumarJ/argo-cd-declarative-gitops-of-cd-for-kubernetes-430c4801e80b 
 Run:
@@ -108,4 +133,11 @@ kubectl port-forward svc/argocd-server -n argocd 8080:443
 kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d
 ```
 
-Now you can configure the Spring Boot App in ArgoCD.
+### 4.5 Configure Spring Booot App in ArgoCD for Your GitHub Repository
+1. Create a new application in ArgoCD.
+2. Set the **Repo URL** to your GitHub repository containing the Kubernetes manifests.
+3. Specify the **target revision** (e.g., `WSL-edits` branch).
+4. Set the **path** to your manifests (e.g., `./demo/k8s`).
+5. Choose the appropriate **cluster** and **namespace** where the application will be deployed.
+
+Decide on the sync policy (manual or automatic) based on your deployment strategy. Sync the application to deploy your Spring Boot app to the Kubernetes cluster.
