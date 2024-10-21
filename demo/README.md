@@ -32,7 +32,7 @@ Solution:
 2. Ensure application.properties is pointing to WindowsIP. Allow connections from WSLIP.
 
 ### 2. Install Docker on WSL Ubuntu
-
+Download Docker Desktop for Windows. Navigate to Settings > Resouces > WSL Integration. Ubuntu distro should automatically be fetched, enable the integration. Alternatively:
 1. Update your package repository:
    ```bash
    sudo apt-get update
