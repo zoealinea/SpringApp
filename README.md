@@ -8,6 +8,7 @@ This README outlines the CI/CD pipeline setup for a Spring Boot application with
 3. [JFrog Artifactory](#jfrog-artifactory)
 4. [MicroK8s](#microk8s)
 5. [ArgoCD](#argocd)
+6. [Jenkins](#jenkins)
 
 ## 1. Local Project Setup
 
@@ -63,6 +64,22 @@ ArgoCD is a declarative continuous delivery tool for Kubernetes. It provides Git
 - **Application Deployment**: ArgoCD automatically deploys your application based on the manifests stored in your Git repository. This aligns with the GitOps methodology, where the Git repository serves as the single source of truth for your application's state.
 - **Continuous Monitoring**: ArgoCD continuously monitors the state of your application in the Kubernetes cluster, ensuring that it matches the desired state defined in your Git repository. If there are any discrepancies, ArgoCD can alert you or automatically apply the necessary changes.
 
-## Conclusion
-This CI/CD pipeline leverages Spring Boot, Docker, JFrog Artifactory, MicroK8s, and ArgoCD to create a robust and efficient deployment workflow. Each technology plays a vital role in ensuring that your application is built, tested, and deployed reliably and consistently across environments.
+## 6. Jenkins
 
+### Purpose
+Jenkins is a CI/CD automation tool that manages and coordinates each stage of the pipeline, integrating the entire workflow from building to deploying the application. It allows you to automate the build, test, and deployment processes.
+
+### Role in CI/CD
+- **Pipeline Automation**: Jenkins ties together each part of this CI/CD pipeline, automating tasks such as code checkout, building the application, running tests, creating Docker images, and triggering deployments.
+- **Integration with JFrog Artifactory and ArgoCD**: Jenkins integrates with JFrog Artifactory to store built images and with ArgoCD to trigger deployments in Kubernetes clusters.
+- **GitHub Integration**: It allows automated code pulls from GitHub, ensuring the latest code is used in the pipeline.
+
+### Jenkins Pipeline Steps
+1. Code Checkout: Pulls the latest code from GitHub.
+2. Build and Test: Compiles and tests the Spring Boot application.
+3. Docker Build and Push: Builds a Docker image from the Dockerfile, tags it with the build number, and pushes it to JFrog Artifactory.
+4. Update Kubernetes Manifests: Updates Kubernetes manifests to use the new Docker image, allowing ArgoCD to deploy the new version.
+5. ArgoCD Sync: Triggers ArgoCD to deploy the updated Kubernetes manifests to the MicroK8s cluster, ensuring the latest application version is live.
+
+## Conclusion
+This CI/CD pipeline leverages Spring Boot, Docker, JFrog Artifactory, MicroK8s, ArgoCD, and Jenkins to create a robust and efficient deployment workflow. Each technology plays a vital role in ensuring that the application is built, tested, and deployed reliably and consistently across environments.
