@@ -20,11 +20,11 @@ pipeline {
                 }
             }
         }
-        stage('Docker Push') {
-            steps {
-                sh 'docker push zreyyes.jfrog.io/springapp-docker/springapp:v1'
-            }
-        }
+        // stage('Docker Push') {
+        //     steps {
+        //         sh 'docker push zreyyes.jfrog.io/springapp-docker/springapp:v1'
+        //     }
+        // }
         stage('Docker Push') {
             steps {
                 script {
