@@ -37,6 +37,7 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 dir('demo/k8s') {
+                    alias kubectl='microk8s kubectl'
                     sh 'kubectl apply -f deployment.yaml'
                 }
             }
