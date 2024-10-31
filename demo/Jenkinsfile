@@ -25,6 +25,15 @@ pipeline {
                 sh 'docker push zreyyes.jfrog.io/springapp-docker/springapp:v1'
             }
         }
+        stage('Docker Push') {
+            steps {
+                script {
+                    docker.withRegistry('https://zreyyes.jfrog.io', 'JFrog_Artifactory') {
+                        sh 'docker push zreyyes.jfrog.io/springapp-docker/springapp:v1'
+                    }
+                }
+            }
+        }
         stage('Deploy to Kubernetes') {
             steps {
                 sh 'kubectl apply -f deployment.yaml'
