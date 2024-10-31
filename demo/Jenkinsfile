@@ -34,11 +34,20 @@ pipeline {
                 }
             }
         }
-        stage('Deploy to Kubernetes') {
+        // stage('Deploy to Kubernetes') {
+        //     steps {
+        //         dir('demo/k8s') {
+        //             alias kubectl='microk8s kubectl'
+        //             sh 'kubectl apply -f deployment.yaml'
+        //         }
+        //     }
+        // }
+        stage('Deploy to MicroK8s') {
             steps {
-                dir('demo/k8s') {
-                    alias kubectl='microk8s kubectl'
-                    sh 'kubectl apply -f deployment.yaml'
+                script {
+                    dir('demo/k8s') {
+                        sh 'microk8s kubectl apply -f deployment.yaml --validate=false'
+                    }
                 }
             }
         }
