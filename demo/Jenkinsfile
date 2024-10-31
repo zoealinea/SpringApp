@@ -16,7 +16,7 @@ pipeline {
             steps {
                 // Specify the directory where pom.xml is located
                 dir('demo') { // Change to the relative path of your pom.xml
-                    sh 'docker build -t zreyyes.jfrog.io/springapp-docker/springapp:v1 .'
+                    sh 'DOCKER_BUILDKIT=0 docker build -t zreyyes.jfrog.io/springapp-docker/springapp:v1 .'
                 }
             }
         }
