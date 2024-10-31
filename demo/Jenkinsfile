@@ -7,7 +7,9 @@ pipeline {
         stage('Build') {
             steps {
                 sh 'ls -la' // This will show the contents of the demo directory
-                sh 'mvn clean package'
+                dir('demo') {
+                    sh 'mvn clean package'
+                }
             }
         }
         stage('Docker Build') {
