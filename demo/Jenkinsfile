@@ -11,7 +11,10 @@ pipeline {
         }
         stage('Docker Build') {
             steps {
-                sh 'docker build -t zreyyes.jfrog.io/springapp-docker/springapp:v1 .'
+                // Specify the directory where pom.xml is located
+                dir('demo') { // Change to the relative path of your pom.xml
+                    sh 'docker build -t zreyyes.jfrog.io/springapp-docker/springapp:v1 .'
+                }
             }
         }
         stage('Docker Push') {
