@@ -6,6 +6,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
+                sh 'ls -la' // This will show the contents of the demo directory
                 sh 'mvn clean package'
             }
         }
