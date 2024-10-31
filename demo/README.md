@@ -105,7 +105,7 @@ alias kubectl='microk8s kubectl'
 kubectl create namespace springapp-namespace
 ```
 
-### 3.5 Deploy the Application
+#### 3.5 Deploy the Application
 Create a `deployment.yaml` file in your project directory for Kubernetes deployment. Apply the configuration with:
 ```bash
 microk8s kubectl apply -f deployment.yaml
@@ -133,7 +133,7 @@ kubectl port-forward svc/argocd-server -n argocd 8080:443
 kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d
 ```
 
-### 4.5 Configure Spring Booot App in ArgoCD for Your GitHub Repository
+#### 4.5 Configure Spring Booot App in ArgoCD for Your GitHub Repository
 1. Create a new application in ArgoCD.
 2. Set the **Repo URL** to your GitHub repository containing the Kubernetes manifests.
 3. Specify the **target revision** (e.g., `WSL-edits` branch).
@@ -141,3 +141,106 @@ kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.pas
 5. Choose the appropriate **cluster** and **namespace** where the application will be deployed.
 
 Decide on the sync policy (manual or automatic) based on your deployment strategy. Sync the application to deploy your Spring Boot app to the Kubernetes cluster.
+
+
+
+### 5. Install Jenkins
+
+1. **Add Jenkins Key and Repository**
+
+   ```bash
+   wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add -
+   sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+   ```
+
+2. **Update and Install Jenkins**
+
+   ```bash
+   sudo apt-get update
+   sudo apt-get install jenkins
+   ```
+
+3. **Start and Enable Jenkins**
+
+   ```bash
+   sudo systemctl start jenkins
+   sudo systemctl enable jenkins
+   ```
+
+4. **Check Jenkins Status**
+
+   ```bash
+   sudo systemctl status jenkins
+   ```
+
+#### 5.1 Initial Jenkins Setup
+
+1. **Retrieve Initial Admin Password**
+
+   ```bash
+   sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+   ```
+
+   - Copy the password and paste it into the Jenkins setup screen at `http://<your_server_ip>:8080`.
+
+2. **Install Suggested Plugins**
+
+   - Select **Install suggested plugins** during the setup.
+
+3. **Create an Admin User**
+
+   - Fill in the required details to create a new admin user or use the default admin account.
+
+#### 5.2 Install Necessary Plugins
+
+1. Go to **Manage Jenkins** > **Manage Plugins** > **Available** tab.
+2. Search for and install the following plugins:
+   - **Pipeline**: For setting up Jenkins pipelines. (Already installed during "suggested" I believe. Also install Pipeline: Stageview to view pipeline stages in UI.)
+   - **GitHub Integration**: For GitHub repository integration.
+   - **Docker Pipeline**: For building Docker images in Jenkins.
+   - **JFrog Artifactory**: To push images to JFrog Artifactory.
+   - **Kubernetes CLI (kubectl)**: To interact with Kubernetes from Jenkins.
+
+#### 5.3 Configure Jenkins Credentials
+
+1. Go to **Manage Jenkins** > **Manage Credentials** > **System** > **Global Scope**.
+2. Add the following credentials as needed:
+   - **GitHub credentials**: Personal Access Token or username/password for accessing the GitHub repository.
+   - **JFrog Artifactory credentials**: For pushing Docker images.
+   - **ArgoCD credentials**: To interact with ArgoCD.
+
+#### 5.4 Configure MicroK8s and Kubectl for Jenkins
+
+1. **Add Jenkins User to MicroK8s Group**
+
+   ```bash
+   sudo usermod -aG microk8s jenkins
+   ```
+
+2. **Set Permissions for the Jenkins User**
+
+   - Verify that the `~/.kube/config` file exists for the Jenkins user, or create it if needed by copying from `/var/snap/microk8s/current/credentials/client.config`:
+
+     ```bash
+     sudo mkdir -p /var/lib/jenkins/.kube
+     sudo cp /var/snap/microk8s/current/credentials/client.config /var/lib/jenkins/.kube/config
+     sudo chown -R jenkins:jenkins /var/lib/jenkins/.kube
+     ```
+
+3. **Restart Jenkins**
+
+   ```bash
+   sudo systemctl restart jenkins
+   ```
+
+#### 5.5 Retrieve ArgoCD Password
+
+Run the following command to retrieve the ArgoCD admin password:
+
+```bash
+kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d
+```
+
+#### 5.6 Jenkins Pipeline Configuration
+
+Set pipeline to pull from SCM.
